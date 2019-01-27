@@ -1,30 +1,63 @@
 
 # MQTT Topics
 
-This device can only consume 1024 Bytes of mqtt messages. So make sure the messages
+This device can only consume 1024Bytes of mqtt messages. So make sure the messages
 are minified and the topic names small than possible.
 
 If you need to support bigger messages, you have to change the **MQTT_MAX_PACKET_SIZE** setting
 inside the **platformio.ini**
 
-## &lt;topic&gt;/text
+## text tile
 
 This messages will trigger printing text to display pane. You have to provide
 the following message format:
 ```json
-[{
-    "c": {
+{
+    "t": {  //infomation about tile
+        "c": 0,   //the class of tile (0 => text; 1 => bitmap)
+        "i": 0,   //the current tile id (must be a uniq integer)
+        "b": 1,   //the background color of this tile (0 => black; 1 => white)
+        "t": 1    //total count of tiles
+    },
+    "p": {  //information about cursor position
         "x": 0,   // cursor position x
         "y": 24   // cursor position y
     },
-    "s": {
-        "s": 24,  //font size. possible values: [9, 12, 18, 24]
-        "b": 1,   //bold? 1 => yes; 0 => no
-        "i": 0,   //italic? 1 => yes; 0 => no
-        "f": 0    //font: 0 => "sans"; 1 => "mono"; 2 => "serif"
+    "c": {  //information about content
+      "s": 24,    //font size. possible values: [9, 12, 18, 24]
+      "b": 1,     //bold? 1 => yes; 0 => no
+      "i": 0,     //italic? 1 => yes; 0 => no
+      "f": 0,     //font: 0 => "sans"; 1 => "mono"; 2 => "serif"
+      "c": 0,     //the text color (0 => black; 1 => white)
+      "t": "text" //the text to print
+    }
+}
+```
+
+## bitmap tile
+
+This messages will trigger printing bitmap to display pane. You have to provide
+the following message format:
+```json
+{
+    "t": {  //infomation about tile
+        "c": 1,   //the class of tile (0 => text; 1 => bitmap)
+        "i": 0,   //the current tile id (must be a uniq integer)
+        "b": 1,   //the background color of this tile (0 => black; 1 => white)
+        "t": 1    //total count of tiles
     },
-    "t": "text"   //the text to print
-}]
+    "p": {  //information about cursor position
+        "x": 0,   // cursor position x
+        "y": 24   // cursor position y
+    },
+    "c": {  //information about content
+      //class specific content
+      "w": 24,    //the width of the bitmap
+      "h": 1,     //the hight of the bitmap
+      "c": 0,     //the color for each set bit (0 => black; 1 => white)
+      "b": "base64==" //the bitmap (base64 encoded)
+    }
+}
 ```
 
 # HowTo debug

@@ -2,7 +2,7 @@
 #define _CONFIG_H_
 
 //outcomment this for development mode
-//#define DEV_MODE
+#define DEV_MODE
 
 //outcomment this if you want to flash the default EEPROM-Values
 //#define INIT_EEPROM
@@ -34,8 +34,6 @@
  */
 #define WIFI_CONNECTION_WAIT_INTERVAL   500
 #define MQTT_CONNECTION_RETRY           5000
-#define MQTT_TOPIC_SUFFIX_TEXT          "/text"
-#define MQTT_TOPIC_SUFFIX_IMAGE         "/image"
 
 /**
  * Setup Menu

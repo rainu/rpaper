@@ -3,17 +3,17 @@
 #include "Fonts.h"
 
 void Listener::handleText(JsonObject& payload) {
-  int16_t cursorX = payload["c"]["x"].as<int16_t>();
-  int16_t cursorY = payload["c"]["y"].as<int16_t>();
+  int16_t cursorX = payload["p"]["x"].as<int16_t>();
+  int16_t cursorY = payload["p"]["y"].as<int16_t>();
   uint8_t textSize = 1;
 
-  bool bold = payload["s"]["b"].as<String>() == "1";
-  bool italic = payload["s"]["i"].as<String>() == "1";
-  uint8_t size = payload["s"]["s"].as<uint8_t>();
+  bool bold = payload["c"]["b"].as<String>() == "1";
+  bool italic = payload["c"]["i"].as<String>() == "1";
+  uint8_t size = payload["c"]["s"].as<uint8_t>();
   const GFXfont *font = &FreeSerif9pt7b; //default font
   uint8_t yAdvance = FreeSerif9pt7b.yAdvance;
   
-  if (payload["s"]["f"].as<String>() == "0") {
+  if (payload["c"]["f"].as<String>() == "0") {
     font = &FreeSerif9pt7b; yAdvance = FreeSerif9pt7b.yAdvance;
 
     if (bold && italic) {
@@ -80,7 +80,7 @@ void Listener::handleText(JsonObject& payload) {
           font = &FreeSerif9pt7b; yAdvance = FreeSerif9pt7b.yAdvance; break;
       }
     }
-  } else if (payload["s"]["f"].as<String>() == "1") {
+  } else if (payload["c"]["f"].as<String>() == "1") {
 #ifdef FONT_MONO_9
     font = &FreeMono9pt7b; yAdvance = FreeMono9pt7b.yAdvance;
 #endif
@@ -150,7 +150,7 @@ void Listener::handleText(JsonObject& payload) {
 #endif
       }
     }
-  } else if (payload["s"]["f"].as<String>() == "2") {
+  } else if (payload["c"]["f"].as<String>() == "2") {
 #ifdef FONT_SANS_9
     font = &FreeSans9pt7b; yAdvance = FreeSans9pt7b.yAdvance;
 #endif
@@ -222,10 +222,18 @@ void Listener::handleText(JsonObject& payload) {
     }
   }
 
-  String text = payload["t"].as<String>();
+  String text = payload["c"]["t"].as<String>();
+  bool useBlack = payload["c"]["c"].as<String>() == "0";
 
   this->display->setCursor(cursorX, cursorY + yAdvance);
   this->display->setTextSize(textSize);
   this->display->setFont(font);
+
+  if(useBlack){
+    this->display->setTextColor(GxEPD_BLACK);
+  }else{
+    this->display->setTextColor(GxEPD_WHITE);
+
+  }
   this->display->print(text);
 }

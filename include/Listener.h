@@ -29,6 +29,12 @@ class Listener {
   void drawBatteryState(BatteryLevel level, bool refresh);
   void drawMqttState(bool connected, bool refresh);
 
+  bool allTilesProcessed();
+  bool tileAlreadyProcessed(uint16_t tileIndex);
+
+  uint16_t currentTile = 0;
+  uint16_t expectedTotal = 0;
+
   int16_t panelStartX;
   int16_t panelStartY;
   int16_t batteryStartX;

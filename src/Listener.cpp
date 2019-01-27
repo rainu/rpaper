@@ -197,41 +197,73 @@ void Listener::handleMessage(char *topic, uint8_t *payload, unsigned int length)
   String sTopic = String(topic);
   Log::debug(sTopic);
 
-  bool isText = sTopic.endsWith(F(MQTT_TOPIC_SUFFIX_TEXT));
-  bool isImage = sTopic.endsWith(F(MQTT_TOPIC_SUFFIX_IMAGE));
-  if(!isText && !isImage) {
-    Log::warn(F("Unknown topic!"));
-    return;
-  }
-
   DynamicJsonBuffer jsonBuffer;
-  JsonArray& elements = jsonBuffer.parseArray(payload);
-  if(!elements.success()) {
+  JsonObject& element = jsonBuffer.parseObject(payload);
+  if(!element.success()) {
     Log::warn(F("Invalid json format!"));
     return;
   }
 
-  this->display->fillRect(
-      0, 0,
-      this->display->width(), this->display->height() - BITMAP_HEIGHT,
-      GxEPD_WHITE);
+  bool isText = element["t"]["c"].as<String>() == "0";
+  bool isImage = element["t"]["c"].as<String>() == "1";
+  if(!isText && !isImage) {
+    Log::warn(F("Unknown tile class!"));
+    return;
+  }
 
-  for(JsonArray::iterator it=elements.begin(); it != elements.end(); ++it) {
-    if (!it->success()) {
-      Log::warn(F("Invalid json format!"));
-      return;
-    }
+  this->expectedTotal = element["t"]["t"].as<uint16_t>();
+  bool firstTile = this->currentTile == 0;
+  uint16_t tileId = element["t"]["i"].as<uint16_t>();
 
-    JsonObject& element = it->as<JsonObject&>();
+  if(this->tileAlreadyProcessed(tileId)){
+    Log::error(F("Skip tile because already drawn."));
+    return;
+  }
+  this->currentTile++;
 
-    if (isText) {
-      this->handleText(element);
-    } else if (isImage) {
-      this->handleImage(element);
+  if(firstTile) {
+    bool useBlack = element["t"]["b"].as<String>() == "0";
+
+    //clear the "painting area"
+    if(useBlack) {
+      this->display->fillRect(
+          0, 0,
+          this->display->width(), this->display->height() - BITMAP_HEIGHT,
+          GxEPD_BLACK);
+    }else{
+      this->display->fillRect(
+          0, 0,
+          this->display->width(), this->display->height() - BITMAP_HEIGHT,
+          GxEPD_WHITE);
     }
   }
 
-  this->display->update();
+  if (isText) {
+    this->handleText(element);
+  } else if (isImage) {
+    this->handleImage(element);
+  }
+
+  if(this->allTilesProcessed()){
+    Log::debug(F("All tiles received. Update screen."));
+
+    this->display->update();
+    this->expectedTotal = 0;
+  }
+}
+
+bool Listener::allTilesProcessed() {
+  return this->expectedTotal == this->currentTile;
+}
+
+bool Listener::tileAlreadyProcessed(uint16_t tileIndex) {
+//  for (int i = 0; i < this->drawn->size(); i++) {
+//    if(tileIndex == this->drawn->get(i)) {
+//      return true;
+//    }
+//  }
+
+  return false;
 }
 
 void Listener::loop() {
