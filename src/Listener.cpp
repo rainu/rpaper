@@ -181,7 +181,7 @@ void Listener::connectMqtt() {
 
     if (this->mqttClient->connect(data.mqtt.clientId, data.mqtt.username, data.mqtt.password)) {
       Log::debug(F("connected"));
-      this->mqttClient->publish(data.mqtt.stateTopic, "<batteryStateHere>");  //TODO
+      this->publishDeviceState();
       this->mqttClient->subscribe(data.mqtt.subcribeTopic);
     } else {
       Log::error(F("Could not connect to mqtt!"));
@@ -248,6 +248,7 @@ void Listener::handleMessage(char *topic, uint8_t *payload, unsigned int length)
     Log::debug(F("All tiles received. Update screen."));
 
     this->display->update();
+    this->currentTile = 0;
     this->expectedTotal = 0;
   }
 }
@@ -266,6 +267,37 @@ bool Listener::tileAlreadyProcessed(uint16_t tileIndex) {
   return false;
 }
 
+const uint16_t BATTERY_DELTA = BATTERY_MAX_VOLTAGE - BATTERY_MIN_VOLTAGE;
+BatteryLevel Listener::getBatteryLevel() {
+  uint16_t currentDelta = BATTERY_MAX_VOLTAGE - ESP.getVcc();
+  uint8_t batteryPercentage = currentDelta * 100 / BATTERY_DELTA;
+
+  if(batteryPercentage > 90) {
+    return L4;
+  }
+
+  if(batteryPercentage > 50) {
+    return L3;
+  }
+
+  if(batteryPercentage > 30) {
+    return L2;
+  }
+
+  if(batteryPercentage > 10) {
+    return L1;
+  }
+
+  return L0;
+}
+
+void Listener::publishDeviceState() {
+  Serial.print(".");
+  PersistendData data = this->persistence->getData();
+
+  this->mqttClient->publish(data.mqtt.stateTopic, String(ESP.getVcc()).c_str());
+}
+
 void Listener::loop() {
   bool justRefreshed = false;
   if (!WiFi.isConnected()) {
@@ -280,6 +312,6 @@ void Listener::loop() {
     this->drawMqttState(true, true);
   }
 
-  Serial.print('.');
   this->mqttClient->loop();
+  this->drawBatteryState(this->getBatteryLevel(), true);
 }

@@ -25,10 +25,13 @@ class Listener {
   void handleText(JsonObject& payload);
   void handleImage(JsonObject& payload);
 
+  void publishDeviceState();
+
   void drawWifiState(bool connected, bool refresh);
   void drawBatteryState(BatteryLevel level, bool refresh);
   void drawMqttState(bool connected, bool refresh);
 
+  BatteryLevel getBatteryLevel();
   bool allTilesProcessed();
   bool tileAlreadyProcessed(uint16_t tileIndex);
 

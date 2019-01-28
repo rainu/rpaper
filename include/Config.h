@@ -53,6 +53,12 @@
 #define PIN_DISPLAY_BUSY        -1
 
 /**
+ * BATTERY
+ */
+#define BATTERY_MIN_VOLTAGE     1800
+#define BATTERY_MAX_VOLTAGE     3600
+
+/**
  * LOGGING
  */
 
