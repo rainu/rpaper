@@ -1,3 +1,5 @@
+# State
+work in progress
 
 # MQTT Topics
 
@@ -59,6 +61,15 @@ the following message format:
     }
 }
 ```
+
+# construction manual
+This program was primary build for the following hardware setup:
+1. NodeMCU ESP8266 ESP-12E
+1. Waveshare 1.54 Inch E-Paper Display Panel Module
+1. push-button switch
+1. 18650 Akku (3,6V)
+
+![construction plan](/doc/rpaper_layout.png)
 
 # HowTo debug
 
