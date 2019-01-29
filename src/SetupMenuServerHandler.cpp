@@ -1,4 +1,5 @@
 #include "SetupMenu.h"
+#include "Device.h"
 #include "Logging.h"
 
 const String KEY_DISPLAY_ROTATION = "displayRotation";
@@ -260,7 +261,6 @@ void SetupMenu::handleRootPOST() {
   this->webServer->send(303);
 
   if (saveMode != 0) {
-    Log::info(F("Restart device now ..."));
-    ESP.restart();
+    Device::restartDevice();
   }
 }

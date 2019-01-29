@@ -7,6 +7,7 @@
 #include "SetupMenu.h"
 #include "Listener.h"
 #include "Bitmaps.h"
+#include "Device.h"
 
 ADC_MODE(USED_ADC_MODE);
 
@@ -20,7 +21,7 @@ WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
 void setup() {
-  delay(1000);
+  pinMode(PIN_SETUP_SWITCH, INPUT_PULLUP);
   Serial.begin(SERIAL_BAUDRATE);
 
 #ifdef DEV_MODE
@@ -45,6 +46,14 @@ void setup() {
 #else
   Log::debug(F("Starting device"));
   PersistendData data = persistence.getData();
+
+  if(data.runMode != RUN_MODE_SETUP && Device::hwButtonPushed()) {
+    Log::debug(F("Force setup"));
+    data.runMode = RUN_MODE_SETUP;
+    persistence.saveData(data);
+    Device::restartDevice();
+    return;
+  }
 
   display.setRotation(data.displayRotation);
   if (data.runMode == RUN_MODE_SETUP) {

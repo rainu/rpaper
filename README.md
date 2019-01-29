@@ -11,7 +11,7 @@ inside the **platformio.ini**
 
 This messages will trigger printing text to display pane. You have to provide
 the following message format:
-```json
+```json5
 {
     "t": {  //infomation about tile
         "c": 0,   //the class of tile (0 => text; 1 => bitmap)
@@ -38,7 +38,7 @@ the following message format:
 
 This messages will trigger printing bitmap to display pane. You have to provide
 the following message format:
-```json
+```json5
 {
     "t": {  //infomation about tile
         "c": 1,   //the class of tile (0 => text; 1 => bitmap)

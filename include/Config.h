@@ -51,6 +51,7 @@
 #define PIN_DISPLAY_DC          D3
 #define PIN_DISPLAY_RST         D4
 #define PIN_DISPLAY_BUSY        -1
+#define PIN_SETUP_SWITCH        D2
 
 /**
  * BATTERY
