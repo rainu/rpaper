@@ -71,6 +71,33 @@ This program was primary build for the following hardware setup:
 
 ![construction plan](/doc/rpaper_layout.png)
 
+# HowTo flash
+
+First off all you have to flash the init EEPROM state:
+```bash
+platformio run -e nodemcuv2-init -t upload
+```
+Let starts the device and wait some seconds. After that you can flash the real software
+```bash
+platformio run -e nodemcuv2-prod -t upload
+```
+
+# HowTo use
+
+After flashing the init state and real software, the device will automatically boot in the "setup"-mode.
+In this mode the device opens an access-point (AP) and shows you the connection details on the display.
+Connect to this AP, open a browser and call the displayed server. Now you have to setup the shown details
+such like the WLAN-AccessPoint to connect and MQTT-Settings. After saving and rebooting, the device
+switch to the "listening"-mode. It will connect to the configured AP and MQTT-Broker and waits for
+messages. 
+
+If you want to reconfigure the device you have to do the following:
+1. turn off the device
+1. press and hold the push-button
+1. turn on the device
+1. after a few seconds the device should restart into the setup mode
+  1. if not restart the device manually (power off; power on)
+
 # HowTo debug
 
 ## Decode Exceptions
