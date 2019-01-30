@@ -23,7 +23,11 @@ struct PersistendData {
     char clientId[MQTT_CLIENT_MAX_LENGTH];
     char username[MQTT_USERNAME_MAX_LENGTH];
     char password[MQTT_PASSWORD_MAX_LENGTH];
-    char subcribeTopic[MQTT_TOPIC_MAX_LENGTH];
+    char subscribeTopic0[MQTT_TOPIC_MAX_LENGTH];
+    char subscribeTopic1[MQTT_TOPIC_MAX_LENGTH];
+    char subscribeTopic2[MQTT_TOPIC_MAX_LENGTH];
+    char subscribeTopic3[MQTT_TOPIC_MAX_LENGTH];
+    char subscribeTopic4[MQTT_TOPIC_MAX_LENGTH];
     char stateTopic[MQTT_TOPIC_MAX_LENGTH];
   } mqtt;
 };

@@ -24,7 +24,11 @@ void PersistenceManager::reset() {
   memset(initData.mqtt.clientId, 0, sizeof(initData.mqtt.clientId));
   memset(initData.mqtt.username, 0, sizeof(initData.mqtt.username));
   memset(initData.mqtt.password, 0, sizeof(initData.mqtt.password));
-  memset(initData.mqtt.subcribeTopic, 0, sizeof(initData.mqtt.subcribeTopic));
+  memset(initData.mqtt.subscribeTopic0, 0, sizeof(initData.mqtt.subscribeTopic0));
+  memset(initData.mqtt.subscribeTopic1, 0, sizeof(initData.mqtt.subscribeTopic1));
+  memset(initData.mqtt.subscribeTopic2, 0, sizeof(initData.mqtt.subscribeTopic2));
+  memset(initData.mqtt.subscribeTopic3, 0, sizeof(initData.mqtt.subscribeTopic3));
+  memset(initData.mqtt.subscribeTopic4, 0, sizeof(initData.mqtt.subscribeTopic4));
   memset(initData.mqtt.stateTopic, 0, sizeof(initData.mqtt.stateTopic));
   strcpy(initData.mqtt.stateTopic, MQTT_DEFAULT_STATE_TOPIC);
 

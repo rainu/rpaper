@@ -11,7 +11,11 @@ const String KEY_MQTT_PORT = "mqtt_port";
 const String KEY_MQTT_CLIENT_ID = "mqtt_client_id";
 const String KEY_MQTT_USERNAME = "mqtt_username";
 const String KEY_MQTT_PASSWORD = "mqtt_password";
-const String KEY_MQTT_SUBSCRIBE_TOPIC = "mqtt_topic_subscribe";
+const String KEY_MQTT_SUBSCRIBE_TOPIC_0 = "mqtt_topic_subscribe_0";
+const String KEY_MQTT_SUBSCRIBE_TOPIC_1 = "mqtt_topic_subscribe_1";
+const String KEY_MQTT_SUBSCRIBE_TOPIC_2 = "mqtt_topic_subscribe_2";
+const String KEY_MQTT_SUBSCRIBE_TOPIC_3 = "mqtt_topic_subscribe_3";
+const String KEY_MQTT_SUBSCRIBE_TOPIC_4 = "mqtt_topic_subscribe_4";
 const String KEY_MQTT_STATE_TOPIC = "mqtt_topic_state";
 
 void SetupMenu::handleMainCss() {
@@ -135,8 +139,24 @@ void SetupMenu::handleIndexHtml() {
                     </div>
 
                     <div class="pure-control-group">
-                        <label for="mqtt_topic_subscribe">Topic</label>
-                        <input type="text" id="mqtt_topic_subscribe" required></input>
+                        <label for="mqtt_topic_subscribe_0">Subscribe Topic (Main)</label>
+                        <input type="text" id="mqtt_topic_subscribe_0" required></input>
+                    </div>
+                    <div class="pure-control-group">
+                        <label for="mqtt_topic_subscribe_1">Subscribe Topic (Optional #1)</label>
+                        <input type="text" id="mqtt_topic_subscribe_1"></input>
+                    </div>
+                    <div class="pure-control-group">
+                        <label for="mqtt_topic_subscribe_2">Subscribe Topic (Optional #2)</label>
+                        <input type="text" id="mqtt_topic_subscribe_2"></input>
+                    </div>
+                    <div class="pure-control-group">
+                        <label for="mqtt_topic_subscribe_3">Subscribe Topic (Optional #3)</label>
+                        <input type="text" id="mqtt_topic_subscribe_3"></input>
+                    </div>
+                    <div class="pure-control-group">
+                        <label for="mqtt_topic_subscribe_4">Subscribe Topic (Optional #4)</label>
+                        <input type="text" id="mqtt_topic_subscribe_4"></input>
                     </div>
 
                     <div class="pure-control-group">
@@ -203,7 +223,11 @@ void SetupMenu::handleDataJs() {
         KEY_MQTT_CLIENT_ID + ": '" + String(data.mqtt.clientId) + "'," +
         KEY_MQTT_USERNAME + ": '" + String(data.mqtt.username) + "'," +
         KEY_MQTT_PASSWORD + ": '" + String(data.mqtt.password) + "'," +
-        KEY_MQTT_SUBSCRIBE_TOPIC + ": '" + String(data.mqtt.subcribeTopic) + "'," +
+        KEY_MQTT_SUBSCRIBE_TOPIC_0 + ": '" + String(data.mqtt.subscribeTopic0) + "'," +
+        KEY_MQTT_SUBSCRIBE_TOPIC_1 + ": '" + String(data.mqtt.subscribeTopic1) + "'," +
+        KEY_MQTT_SUBSCRIBE_TOPIC_2 + ": '" + String(data.mqtt.subscribeTopic2) + "'," +
+        KEY_MQTT_SUBSCRIBE_TOPIC_3 + ": '" + String(data.mqtt.subscribeTopic3) + "'," +
+        KEY_MQTT_SUBSCRIBE_TOPIC_4 + ": '" + String(data.mqtt.subscribeTopic4) + "'," +
         KEY_MQTT_STATE_TOPIC + ": '" + String(data.mqtt.stateTopic) + "'," +
     "};"
   );
@@ -254,7 +278,11 @@ void SetupMenu::handleRootPOST() {
   setStringValue(this->webServer, KEY_MQTT_CLIENT_ID, data.mqtt.clientId, sizeof(data.mqtt.clientId));
   setStringValue(this->webServer, KEY_MQTT_USERNAME, data.mqtt.username, sizeof(data.mqtt.username));
   setStringValue(this->webServer, KEY_MQTT_PASSWORD, data.mqtt.password, sizeof(data.mqtt.password));
-  setStringValue(this->webServer, KEY_MQTT_SUBSCRIBE_TOPIC, data.mqtt.subcribeTopic, sizeof(data.mqtt.subcribeTopic));
+  setStringValue(this->webServer, KEY_MQTT_SUBSCRIBE_TOPIC_0, data.mqtt.subscribeTopic0, sizeof(data.mqtt.subscribeTopic0));
+  setStringValue(this->webServer, KEY_MQTT_SUBSCRIBE_TOPIC_1, data.mqtt.subscribeTopic1, sizeof(data.mqtt.subscribeTopic1));
+  setStringValue(this->webServer, KEY_MQTT_SUBSCRIBE_TOPIC_2, data.mqtt.subscribeTopic2, sizeof(data.mqtt.subscribeTopic2));
+  setStringValue(this->webServer, KEY_MQTT_SUBSCRIBE_TOPIC_3, data.mqtt.subscribeTopic3, sizeof(data.mqtt.subscribeTopic3));
+  setStringValue(this->webServer, KEY_MQTT_SUBSCRIBE_TOPIC_4, data.mqtt.subscribeTopic4, sizeof(data.mqtt.subscribeTopic4));
 
   this->persistence->saveData(data);
   this->webServer->sendHeader(F("Location"), "/");

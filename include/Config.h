@@ -23,7 +23,7 @@
 #define WIFI_USERNAME_MAX_LENGTH        64
 #define WIFI_PASSWORD_MAX_LENGTH        64
 #define MQTT_HOSTNAME_MAX_LENGTH        256
-#define MQTT_TOPIC_MAX_LENGTH           256
+#define MQTT_TOPIC_MAX_LENGTH           64
 #define MQTT_CLIENT_MAX_LENGTH          64
 #define MQTT_USERNAME_MAX_LENGTH        64
 #define MQTT_PASSWORD_MAX_LENGTH        64

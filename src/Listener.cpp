@@ -177,11 +177,14 @@ void Listener::connectMqtt() {
 
   while (!this->mqttClient->connected()) {
     Log::debug(F("Attempting MQTT connection..."));
-    Log::debug(data.mqtt.subcribeTopic);
 
     if (this->mqttClient->connect(data.mqtt.clientId, data.mqtt.username, data.mqtt.password)) {
       Log::debug(F("connected"));
-      this->mqttClient->subscribe(data.mqtt.subcribeTopic);
+      if(String(data.mqtt.subscribeTopic0).length() > 0) this->mqttClient->subscribe(data.mqtt.subscribeTopic0);
+      if(String(data.mqtt.subscribeTopic1).length() > 0) this->mqttClient->subscribe(data.mqtt.subscribeTopic1);
+      if(String(data.mqtt.subscribeTopic2).length() > 0) this->mqttClient->subscribe(data.mqtt.subscribeTopic2);
+      if(String(data.mqtt.subscribeTopic3).length() > 0) this->mqttClient->subscribe(data.mqtt.subscribeTopic3);
+      if(String(data.mqtt.subscribeTopic4).length() > 0) this->mqttClient->subscribe(data.mqtt.subscribeTopic4);
     } else {
       Log::error(F("Could not connect to mqtt!"));
       Log::error("rc=" + String(this->mqttClient->state()));
@@ -340,7 +343,13 @@ void Listener::publishDeviceState() {
   }
 
   JsonObject& configMqttTopic = configMqtt.createNestedObject("t");
-  configMqttTopic["s"] = data.mqtt.subcribeTopic;
+  JsonArray& configMqttTopicSubs =  configMqttTopic.createNestedArray("s");
+  if(String(data.mqtt.subscribeTopic0).length() > 0) configMqttTopicSubs.add(data.mqtt.subscribeTopic0);
+  if(String(data.mqtt.subscribeTopic1).length() > 0) configMqttTopicSubs.add(data.mqtt.subscribeTopic1);
+  if(String(data.mqtt.subscribeTopic2).length() > 0) configMqttTopicSubs.add(data.mqtt.subscribeTopic2);
+  if(String(data.mqtt.subscribeTopic3).length() > 0) configMqttTopicSubs.add(data.mqtt.subscribeTopic3);
+  if(String(data.mqtt.subscribeTopic4).length() > 0) configMqttTopicSubs.add(data.mqtt.subscribeTopic4);
+
   configMqttTopic["p"] = data.mqtt.stateTopic;
 
   String result;

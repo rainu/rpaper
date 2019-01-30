@@ -93,7 +93,7 @@ The device will publish the current state to the configured mqtt topic. The json
             "u": "",          // user
             "s": "",          // password (only if enabled -> see Config.h#PUBLISH_MQTT_PASSWORD)
             "t": {  //topic settings
-                "s": "epaper/+",  //subscribe topic
+                "s": ["epaper/+"],  //subscribe topics
                 "p": "state"      //publish topic (this message should published there)
             }
         },
