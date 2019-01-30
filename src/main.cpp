@@ -51,8 +51,6 @@ void setup() {
     Log::debug(F("Force setup"));
     data.runMode = RUN_MODE_SETUP;
     persistence.saveData(data);
-    Device::restartDevice();
-    return;
   }
 
   display.setRotation(data.displayRotation);
