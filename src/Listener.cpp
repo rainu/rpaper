@@ -14,14 +14,6 @@ Listener::Listener(GxEPD_Class *_display,
   PersistendData data = this->persistence->getData();
   this->mqttClient->setCallback(std::bind(&Listener::handleMessage, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
-  IPAddress addr;
-  if (addr.fromString(data.mqtt.host)) {
-    this->mqttClient->setServer(addr, data.mqtt.port);
-  } else {
-    this->mqttClient->setServer(data.mqtt.host, data.mqtt.port);
-  }
-
-  Log::debug("MQTT-Target: " + String(data.mqtt.host) + ":" + String(data.mqtt.port));
 
   //initialise display
   this->panelStartX = 0;
@@ -174,6 +166,16 @@ void Listener::connectWifi() {
 
 void Listener::connectMqtt() {
   PersistendData data = this->persistence->getData();
+
+  IPAddress addr;
+  if (!addr.fromString(data.mqtt.host)) {
+    addr = IPAddress();
+    Log::info(F("Resolve host via DNS..."));
+    WiFi.hostByName(data.mqtt.host, addr);
+  }
+
+  this->mqttClient->setServer(addr, data.mqtt.port);
+  Log::debug("MQTT-Target: " + addr.toString() + ":" + String(data.mqtt.port));
 
   while (!this->mqttClient->connected()) {
     Log::debug(F("Attempting MQTT connection..."));
