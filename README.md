@@ -62,6 +62,45 @@ the following message format:
 }
 ```
 
+## State
+The device will publish the current state to the configured mqtt topic. The json will looks like
+```json5
+{
+    "s": {  //state
+        "w": {  //wifi
+            "i": "192.168.2.2",       //local ip
+            "m": "55:66:77:88:99:00", //mac address of the device
+            "g": "192.168.2.1",       //gateway ip
+            "s": -38,                 //current signal strength to station
+            "b": "00:11:22:33:44:55"  //BSSID
+        },
+        "b": {  //battery state
+            "p": 36,    //percentage 100 => full battery; 0 => no battery
+            "l": "L0",  //battery level (L0 [empty] - L4 [full])
+            "v": 2941   //voltage in mV
+        },
+    },
+    "c": {  //used config values
+        "w": {  //wifi
+            "s": "SSID",  // ssid
+            "u": "",      // username
+            "p": ""       // password (only if enabled -> see Config.h#PUBLISH_WIFI_PASSWORD)
+        },
+        "m": {  //mqtt
+            "h": "host",      // host
+            "p": 1883,        // port
+            "c": "epaper-01", // client id
+            "u": "",          // user
+            "s": "",          // password (only if enabled -> see Config.h#PUBLISH_MQTT_PASSWORD)
+            "t": {  //topic settings
+                "s": "epaper/+",  //subscribe topic
+                "p": "state"      //publish topic (this message should published there)
+            }
+        },
+    }
+}
+```
+
 # construction manual
 This program was primary build for the following hardware setup:
 1. NodeMCU ESP8266 ESP-12E

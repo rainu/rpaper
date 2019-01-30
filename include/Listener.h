@@ -32,6 +32,8 @@ class Listener {
   void drawMqttState(bool connected, bool refresh);
 
   BatteryLevel getBatteryLevel();
+  uint8_t getBatteryPercent();
+
   bool allTilesProcessed();
   bool tileAlreadyProcessed(uint16_t tileIndex);
 

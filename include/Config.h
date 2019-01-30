@@ -34,6 +34,8 @@
  */
 #define WIFI_CONNECTION_WAIT_INTERVAL   500
 #define MQTT_CONNECTION_RETRY           5000
+#define PUBLISH_WIFI_PASSWORD           false
+#define PUBLISH_MQTT_PASSWORD           false
 
 /**
  * Setup Menu

@@ -181,7 +181,6 @@ void Listener::connectMqtt() {
 
     if (this->mqttClient->connect(data.mqtt.clientId, data.mqtt.username, data.mqtt.password)) {
       Log::debug(F("connected"));
-      this->publishDeviceState();
       this->mqttClient->subscribe(data.mqtt.subcribeTopic);
     } else {
       Log::error(F("Could not connect to mqtt!"));
@@ -268,9 +267,14 @@ bool Listener::tileAlreadyProcessed(uint16_t tileIndex) {
 }
 
 const uint16_t BATTERY_DELTA = BATTERY_MAX_VOLTAGE - BATTERY_MIN_VOLTAGE;
-BatteryLevel Listener::getBatteryLevel() {
+uint8_t Listener::getBatteryPercent() {
   uint16_t currentDelta = BATTERY_MAX_VOLTAGE - ESP.getVcc();
   uint8_t batteryPercentage = currentDelta * 100 / BATTERY_DELTA;
+  return batteryPercentage;
+}
+
+BatteryLevel Listener::getBatteryLevel() {
+  uint8_t batteryPercentage = this->getBatteryPercent();
 
   if(batteryPercentage > 90) {
     return L4;
@@ -292,10 +296,57 @@ BatteryLevel Listener::getBatteryLevel() {
 }
 
 void Listener::publishDeviceState() {
-  Serial.print(".");
   PersistendData data = this->persistence->getData();
 
-  this->mqttClient->publish(data.mqtt.stateTopic, String(ESP.getVcc()).c_str());
+  DynamicJsonBuffer jsonBuffer;
+  JsonObject& root = jsonBuffer.createObject();
+
+  JsonObject& state = root.createNestedObject("s");
+  JsonObject& stateWifi = state.createNestedObject("w");
+  stateWifi["i"] = WiFi.localIP().toString();
+  stateWifi["m"] = WiFi.macAddress();
+  stateWifi["g"] = WiFi.gatewayIP().toString();
+  stateWifi["s"] = WiFi.RSSI();
+  stateWifi["b"] = WiFi.BSSIDstr();
+
+  JsonObject& battery = state.createNestedObject("b");
+  battery["p"] = this->getBatteryPercent();
+  switch(this->getBatteryLevel()){
+    case L0:  battery["l"] = "L0"; break;
+    case L1:  battery["l"] = "L1"; break;
+    case L2:  battery["l"] = "L2"; break;
+    case L3:  battery["l"] = "L3"; break;
+    case L4:  battery["l"] = "L4"; break;
+  }
+  battery["v"] = ESP.getVcc();
+
+  JsonObject& config = root.createNestedObject("c");
+  JsonObject& configWifi = config.createNestedObject("w");
+  configWifi["s"] = data.wifi.ssid;
+  configWifi["u"] = data.wifi.username;
+
+  if(PUBLISH_WIFI_PASSWORD){
+    configWifi["p"] = data.wifi.password;
+  }
+
+  JsonObject& configMqtt = config.createNestedObject("m");
+  configMqtt["h"] = data.mqtt.host;
+  configMqtt["p"] = data.mqtt.port;
+  configMqtt["c"] = data.mqtt.clientId;
+  configMqtt["u"] = data.mqtt.username;
+
+  if(PUBLISH_MQTT_PASSWORD){
+    configMqtt["s"] = data.mqtt.password;
+  }
+
+  JsonObject& configMqttTopic = configMqtt.createNestedObject("t");
+  configMqttTopic["s"] = data.mqtt.subcribeTopic;
+  configMqttTopic["p"] = data.mqtt.stateTopic;
+
+  String result;
+  root.printTo(result);
+
+  this->mqttClient->publish(data.mqtt.stateTopic, result.c_str());
 }
 
 void Listener::loop() {
@@ -313,5 +364,6 @@ void Listener::loop() {
   }
 
   this->mqttClient->loop();
+  this->publishDeviceState();
   this->drawBatteryState(this->getBatteryLevel(), true);
 }
